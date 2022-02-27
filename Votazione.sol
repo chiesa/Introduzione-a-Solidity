@@ -5,11 +5,11 @@ pragma solidity >=0.7.0 <0.9.0;
 TEST EFFETTUATI: 
 1) andiamo a: 
  - definire 5 candidati (sono stati effettuati test anche con piu e meno di 5 candidati, questi test non sono stati approfonditi):
-		["0x1000000000000000000000000000000000000000000000000000000000000000",
-		"0x2000000000000000000000000000000000000000000000000000000000000000",
-		"0x3000000000000000000000000000000000000000000000000000000000000000",
-		"0x4000000000000000000000000000000000000000000000000000000000000000",
-		"0x5000000000000000000000000000000000000000000000000000000000000000"]
+	["0x1000000000000000000000000000000000000000000000000000000000000000",
+	"0x2000000000000000000000000000000000000000000000000000000000000000",
+	"0x3000000000000000000000000000000000000000000000000000000000000000",
+	"0x4000000000000000000000000000000000000000000000000000000000000000",
+	"0x5000000000000000000000000000000000000000000000000000000000000000"]
  - dare diritto di voto a 5 indirizzi (test sempre con numeri minori):
 	0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 (creatore -> errore perchè inizializzato in partenza)
 	0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2
@@ -56,12 +56,13 @@ NOTARE INOLTRE:
 	 il primo utente delegherà l'ultimo e viene persa la relazione di mezzo
 */ 
 contract Votazione{
-	/* la struttura Str_votante è una struttura che contiene i dati relativi ad ogni elettore:
-	 - votato: se ha votato; 
-	 - capacita: quanti voti ha a disposizione l'elettore (1 + numero di persone che lo hanno delegato);
-	 - delegato: soggetto delegato dall'elettore;
-	 - nomeVotato: chi ha votato;
-	 - Deleganti: lista delle persone che hanno delegato lui al voto */
+    /* la struttura Str_votante è una struttura che contiene i dati relativi ad ogni elettore:
+     - votato: se ha votato; 
+     - capacita: quanti voti ha a disposizione l'elettore (1 + numero di persone che lo hanno delegato);
+     - delegato: soggetto delegato dall'elettore;
+     - nomeVotato: chi ha votato;
+     - Deleganti: lista delle persone che hanno delegato lui al voto 
+    */
     struct Str_votante{
         bool votato;
         uint capacita;
@@ -69,31 +70,32 @@ contract Votazione{
         bytes32 nomeVotato;
         Deleganti[] deleganti;
     }
-	// Deleganti: sono colore che lo hanno delegato con relativo indirizzo e capacita
+    // Deleganti: sono colore che lo hanno delegato con relativo indirizzo e capacita
     struct Deleganti{
         address mittente;
         uint capacita;
     }
-	//votante è un correlazione tra l'indirizzo e la struttura Str_votante
+    //votante è un correlazione tra l'indirizzo e la struttura Str_votante
     mapping(address=>Str_votante) public votante;
     address creatore;
 	
-	/*
-	Candidato è il nome e il numero di voti che ha ricevuto. 
-	Per la gestione dei candidati facciamo un array e una mappatura tra il nome e l'indice nell'array
+    /*
+     Candidato è il nome e il numero di voti che ha ricevuto. 
+     Per la gestione dei candidati facciamo un array e una mappatura tra il nome e l'indice nell'array
     */
-	struct Candidato{
+    struct Candidato{
         bytes32 nome;
         uint nVoti;
     }
     mapping(bytes32=>uint) public indexCand;
     Candidato[] candidati;
 
-	/* il costruttore provvede a:
-	 - definire il creatore
-	 - dare la possibilità di voto al creatore 
-	 - ad inizializzare i candidati
-	*/
+    /* 
+    Il costruttore provvede a:
+     - definire il creatore
+     - dare la possibilità di voto al creatore 
+     - ad inizializzare i candidati
+    */
     constructor (bytes32[] memory nomi){
         creatore = msg.sender;
         votante[creatore].capacita = 1;
@@ -104,8 +106,8 @@ contract Votazione{
         }
     }
 	
-	// vengono definiti qui un elenco di requisti che verranno richiamati dalle funzioni 
-	// per garantire il corretto funzionamento del programma
+    // vengono definiti qui un elenco di requisti che verranno richiamati dalle funzioni 
+    // per garantire il corretto funzionamento del programma
     modifier creatoreOnly() {
         require(creatore == msg.sender, "non hai i permessi per chiamare la funzione");
         _;
@@ -117,7 +119,7 @@ contract Votazione{
     }
 
     // la funzione permette di dare diritto di voto agli indirizza (incrementa capacita per l'indirizzo)
-	function dareDirittoVoto(address addVoto) public creatoreOnly{
+    function dareDirittoVoto(address addVoto) public creatoreOnly{
         require(!votante[addVoto].votato, "hai gia' votato");
         require(votante[addVoto].capacita==0, "hai gia' diritto di voto");
 
@@ -125,7 +127,7 @@ contract Votazione{
 
     }
 
-	// passando un indirizzo si riporta l'indice nell'arrey Candidati della persona votata
+    // passando un indirizzo si riporta l'indice nell'arrey Candidati della persona votata
     function indexR(address del) private view returns (uint i){
         require(votante[del].votato, "non si ha ancora votato");
 		while(votante[del].delegato != address(0)){
@@ -140,8 +142,8 @@ contract Votazione{
         // si controlla se la persona a cui si sta togliendo il diritto di voto ha già votato 
         if(rVotante.votato){
             // se ha votato si controlla se ha delegato qualcuno, si sale alla radice della delegazione
-			// si modifica la capacita delle persona delegata
-			// se la persona delegata ha gia votato e in caso di toglie il voto al candidato
+	    // si modifica la capacita delle persona delegata
+	    // se la persona delegata ha gia votato e in caso di toglie il voto al candidato
             if(rVotante.delegato != address(0)){
                 address del = rVotante.delegato;
                 rVotante.delegato = address(0);
@@ -159,27 +161,27 @@ contract Votazione{
             }
         }
         // si aggiorna la tabella delle persone che hanno delegato la persona a cui viene tolto il voto
-		// le persone che inprecedenza la avevano votato, tornano in diritto di votare
+	// le persone che inprecedenza la avevano votato, tornano in diritto di votare
         for(uint i = 0; i<rVotante.deleganti.length; i++){
             address ripVoti = (rVotante.deleganti)[i].mittente;
             uint nVoti = (rVotante.deleganti)[i].capacita;
             votante[ripVoti].capacita = nVoti;
             votante[ripVoti].votato = false;
         }
-		// si annulla possibilità di votare e il fatto che si il soggetto abbia votato
+	// si annulla possibilità di votare e il fatto che si il soggetto abbia votato
         votante[remVoto].capacita = 0;
         votante[remVoto].votato = false;
     }
 
 	
-   	// la funzione da la possibilità di delegare altri indirizzi
-    function delega(address to) public condVoto{
+   // la funzione da la possibilità di delegare altri indirizzi
+   function delega(address to) public condVoto{
         require(msg.sender!=to, "non e' possibile autodelegarsi");
         require(votante[to].capacita!=0, "delegato non ha diritto di voto");
         Str_votante memory rVotante = votante[msg.sender];
-   		// si aggiunge alla persona che sta chiamando la funzione chi sta delegando
+   	// si aggiunge alla persona che sta chiamando la funzione chi sta delegando
         votante[msg.sender].delegato = to;
-   		// si aggiorna la lista delle persone che stanno delegando il delegato (aggiungendo la persona che sta chiamando la funzione)
+   	// si aggiorna la lista delle persone che stanno delegando il delegato (aggiungendo la persona che sta chiamando la funzione)
         (votante[to].deleganti).push(Deleganti(msg.sender,rVotante.capacita));
         // si aggiorna a true il fatto di aver votato
         votante[msg.sender].votato = true;
@@ -191,20 +193,20 @@ contract Votazione{
             votante[to].capacita += rVotante.capacita;
             require(to != msg.sender, "Loop: non e' possibile autodelegarsi");
         }
-		// se la persona delegata ha già votato allora si aumenta i voti ricevuti dalla candidato votato dal delegato
+	// se la persona delegata ha già votato allora si aumenta i voti ricevuti dalla candidato votato dal delegato
         if(votante[to].votato){
             uint index = indexR(to);
             candidati[index].nVoti += rVotante.capacita;
         }
     }
 
-	/* 
-	è possibile eliminare la delega effettuata. 
-	 Per fa ciò dopo aver verificato il fatto di aver delegato qualcuno,
-	 viene tolto (se assegnato) il voto assegnato al candidato perdestinato.
-	 viene diminuita la capacita di voto della persona delegata,
-	 viene eliminato dall'array delle persone che hanno delegato il vecchio soggetto a cui era stata data la delega,
-	 si annulla il fatto di aver votato (vorato = false) e si cambia il riferimento della persona delegata a NULL (address(0))
+    /* 
+    E' possibile eliminare la delega effettuata. 
+    Per fa ciò dopo aver verificato il fatto di aver delegato qualcuno,
+     viene tolto (se assegnato) il voto assegnato al candidato perdestinato.
+    Viene diminuita la capacita di voto della persona delegata,
+     viene eliminato dall'array delle persone che hanno delegato il vecchio soggetto a cui era stata data la delega,
+     si annulla il fatto di aver votato (vorato = false) e si cambia il riferimento della persona delegata a NULL (address(0))
     */
     function deleteDelega() public{
         Str_votante memory rVotante = votante[msg.sender];
@@ -225,11 +227,11 @@ contract Votazione{
         delete elencoDeleganti[elencoDeleganti.length-1];
         votante[exDel].deleganti = elencoDeleganti;
 
-		// aggiorno lo stato di chi sta eliminando la delega
+	// aggiorno lo stato di chi sta eliminando la delega
         votante[msg.sender].votato = false;
         votante[msg.sender].delegato = address(0);
         votante[exDel].capacita -= capacitaRemVot;
-		// diminuisco la capacita delle persone delegate a cascata
+	// diminuisco la capacita delle persone delegate a cascata
         while(votante[exDel].delegato != address(0)){
             exDel = votante[exDel].delegato;
             votante[exDel].capacita -= capacitaRemVot;
@@ -242,17 +244,17 @@ contract Votazione{
     }
 
 
-	// La funzione permette di votare -> implementa il numeri dei voti ricevuti dal candidato prescelto 
-	// della capacità di voto dell'elttore  
+    // La funzione permette di votare -> implementa il numeri dei voti ricevuti dal candidato prescelto 
+    // della capacità di voto dell'elttore  
     function voto(bytes32 to) public condVoto{
         votante[msg.sender].nomeVotato = to;
         votante[msg.sender].votato = true;
         candidati[indexCand[to]].nVoti += votante[msg.sender].capacita;
     }
 
-	// la funzione permette di eliminare il voto, dopo aver fatto le valutazioni di sorta, 
-	// setta a FALSE il fatto di aver votato
-	// si decrementano i voti ricevuti dal candidato 
+    // la funzione permette di eliminare il voto, dopo aver fatto le valutazioni di sorta, 
+    // setta a FALSE il fatto di aver votato
+    // si decrementano i voti ricevuti dal candidato 
     function deleteVoto() public{
         require(votante[msg.sender].votato, "non si ha ancora voto");
         require(votante[msg.sender].nomeVotato.length > 0, "il voto precedendemente dato e' NULL");
@@ -262,7 +264,7 @@ contract Votazione{
         votante[msg.sender].nomeVotato = "";
     }
 
-	// le seguenti funzioni permetto di cambiare il voto e la delega assegnati precedentementi
+    // le seguenti funzioni permetto di cambiare il voto e la delega assegnati precedentementi
     function changeVoto(bytes32 newVoto) public{
         deleteVoto();
         voto(newVoto);
@@ -272,9 +274,9 @@ contract Votazione{
         delega(newDelega);
     }
 
-	// la seguente funzione permette di recuperare la classifica delle prime 5 persone per voto
+    // la seguente funzione permette di recuperare la classifica delle prime 5 persone per voto
     function classificaTop5() public view returns(Candidato[5] memory _classifica){
-		// con due cicli for si definisce la posizione in classifica di ogni candidato
+	// con due cicli for si definisce la posizione in classifica di ogni candidato
         for(uint i=0; i<candidati.length; i++){
             uint poss = 0;
             for(uint j=0; j<candidati.length; j++){
@@ -282,23 +284,23 @@ contract Votazione{
                     poss+=1;
                 }
             }
-			// il ciclo while va a risolvere il problema di diversi candidati con il medesimo punteggio
+            // il ciclo while va a risolvere il problema di diversi candidati con il medesimo punteggio
             while(_classifica[poss].nome != ""){
                 poss+=1;
-				// se non si è nelle prime 5 posizioni l'array andrebbe in overflow quindi si esce dal ciclo 
+		// se non si è nelle prime 5 posizioni l'array andrebbe in overflow quindi si esce dal ciclo 
                 if(poss>=5){
                     break;
                 }
             }
-			// se posizione è minore di 5 allora si inserisce il candidato nella posizione di riferimento in classifica
+            // se posizione è minore di 5 allora si inserisce il candidato nella posizione di riferimento in classifica
             if(poss<5){
                 _classifica[poss] = candidati[i];         
             }
         }
     }
 
-	// si recupera i primi 5 classificati, si recupera il primo e lo si fa tornare
-	// in caso di pareggio la funzione andrà in errore
+    // si recupera i primi 5 classificati, si recupera il primo e lo si fa tornare
+    // in caso di pareggio la funzione andrà in errore
     function vincitore() public view creatoreOnly returns (Candidato memory _classifica){
         Candidato[5] memory supClass = classificaTop5();
         require(supClass[0].nVoti != supClass[1].nVoti, "Pareggio");
