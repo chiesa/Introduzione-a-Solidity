@@ -93,6 +93,7 @@ Si utilizzeranno i seguenti portafoglio per la fase di test: <br/>
   0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 (creatore - primo indirizzo) <br/>
   0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2 (secondo indirizzo) <br/>
   0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db (terzo indirizzo) <br/>
+  
 1) con il primo portafoglio si va a fare un'offerta pari a 8 (errore sotto soglia);
 2) con il primo portafoglio si va a fare un'offerta pari a 15;
 3) con il primo portafoglio si va a fare un'offerta pari a 17 (errore perchè si è già il miglior offerente);
