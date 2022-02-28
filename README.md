@@ -88,11 +88,11 @@ Chiaramente a livello logico, questo problema verrà risolto a livello applicati
 
 ### Test effettuato
 Si crea un contratto in cui il beneficario è 0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB, l'offerta è 10, la durata è 180 secondi, incremento minimo è 0.1: <br/>
-	0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB, 10, 180, 2
+	0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB, 10, 180, 2 <br/>
 Si utilizzeranno i seguenti portafoglio per la fase di test: <br/>
-  0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 (creatore - primo indirizzo) <br/>
-  0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2 (secondo indirizzo) <br/>
-  0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db (terzo indirizzo) <br/>
+ 	0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 (creatore - primo indirizzo) <br/>
+	0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2 (secondo indirizzo) <br/>
+  	0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db (terzo indirizzo) <br/>
   
 1) con il primo portafoglio si va a fare un'offerta pari a 8 (errore sotto soglia);
 2) con il primo portafoglio si va a fare un'offerta pari a 15;
