@@ -59,20 +59,51 @@ Viene creato il contratto "Votazione" per gestire un sistema di votazione nel qu
 16) chiamare il vincitore che sarà il terzo candidato
 Non sono stati effettuati ulteriori test
 
-## Asta
+## Asta.sol
 ### Funzionamento
 Il programma asta si prefigge l'obiettivo di creare una semplice asta. 
 Con il seguente algoritmo un indirizzo può creare un asta, gli altri indirizzo possono fare offerte maggiori.
 Per far questo creiamo:
  - Costruttore: 
-	si definiscono il beneficario
-	il tempo di scadenza di un asta 
- - funzione offerta(uint amount):
-	in questa funzione si controlla inanzitutto se il tempo per effettuare offerte è scaduto, in tal caso si chiama fineAsta(revert nome error);
-	si controlla che l'offerta (msg.value) sia inferiore alla precedente offerta e in tal caso si manda in errore 
+	1) il beneficario
+        2) l'offerta minama
+	3) il tempo di scadenza di un asta
+        4) incremento minimo 
+ - funzione offerta(uint amount) return tempo rimante:
+	in questa funzione si controlla inanzitutto se il tempo per effettuare offerte è scaduto, in tal caso si andrà in errore (revert nome errore)\*
+	si controlla che tu non sia il migliorOffertent
+        si controlla se l'offerta (msg.value) non è sufficiente per superare la precedente offerta e in tal caso si manda in errore 
 	si rimandano al vecchio offerente i suoi soldi (chiamando funzione withdraw) 
 	si cambiano i dati del miglior offerente
-	si manda un messaggio con la nuova offerta
+	si manda un messaggio con la nuova offerta (chiamato con emit)
  - funzione fineAsta():
+ 	si richiede che il tempo sia scaduto;
 	si chiama evento fine asta in cui si riporta il portafoglio del vincitore e l'amount(chiamato con emit)
 	si mandano i soldi al beneficario
+
+\*NOTA BENE: 
+l'intenzione iniziale era quella di far chiamare la funzione fineAsta alla prima offerta dopo che il tempo scadeva ma l'esecuzione in concomitanza della funzione fineAsta e dell'errore non è stata possibile.
+Togliendo i commenti dalle righe commentate nel codice la prima volta in cui si chiama offerta() dopo il termine tempo verrà chiameta fineAsta() e solo dalla seconda volta la funzione andrà in errore. 
+Chiaramente a livello logico, questo problema verrà risolto a livello applicativo: quando scadrà il tempo l'applicazione chiamerà fineAsta()
+
+### Test effettuato
+Si crea un contratto in cui il beneficario è 0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB, l'offerta è 10, la durata è 180 secondi, incremento minimo è 0.1;
+	0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB, 10, 180, 2
+Si utilizzeranno i seguenti portafoglio per la fase di test: 
+  0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 (creatore - primo indirizzo)
+  0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2 (secondo indirizzo)
+  0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db (terzo indirizzo)
+1) con il primo portafoglio si va a fare un'offerta pari a 8 (errore sotto soglia);
+2) con il primo portafoglio si va a fare un'offerta pari a 15;
+3) con il primo portafoglio si va a fare un'offerta pari a 17 (errore perchè si è già il miglior offerente);
+4) con il secondo portafoglio si va ad offrire 110 (errore più dei soldi a disposizione);
+5) con il secondo si andrà ad offrire 12, errore perchè minore della miglior offerta;
+6) con il secondo si offrirà 16, errore perchè non si incrementa almeno di 2;
+7) con il secondo si offrirà 17;
+8) con il terzo si offrirà 20;
+9) nell'ultimo minuto con il primo si offrirà 30 -> incremeterà il tempo di offerta di 1 minuto 
+10) aspettiamo alcuni secondi e secondo si offrirà 35;
+11) aspettiamo circa 30 secondi e il terzo offrirà 37;
+12) dopo almeno 1 minuto, il primo offrirà 40 -> errore asta finità e i soldi verranno mandati al beneficario.
+Non sono stati effettuati ulteriori test
+
