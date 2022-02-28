@@ -35,7 +35,7 @@ Viene creato il contratto "Votazione" per gestire un sistema di votazione nel qu
 		"0x3000000000000000000000000000000000000000000000000000000000000000",
 		"0x4000000000000000000000000000000000000000000000000000000000000000",
 		"0x5000000000000000000000000000000000000000000000000000000000000000"]
- - dare diritto di voto a 5 indirizzi (test sempre con numeri minori):
+ - dare diritto di voto a 5 indirizzi (test sempre con numeri minori): /n
 	0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 (creatore -> errore perchè inizializzato in partenza)
 	0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2
 	0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db
