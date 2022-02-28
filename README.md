@@ -1,10 +1,17 @@
 # Introduzione a Solidity
 
 ## Contesto
-Nella seconda metà del mese di febbraio ho iniziato a studiare solidity. In questo ambito ho iniziato a studiare e modificare i codici di esempio forniti dalla libreria stessa.
+Nella seconda metà del mese di febbraio ho iniziato a studiare solidity. In questo ambito ho iniziato a studiare semplici codici, a scrivere qualche piccolo script e a modificare i codici di esempio forniti dalla libreria stessa.
 I programmi sono:
-1) votazione.sol
+1) note.sol
+2) atleti.sol
+3) votazione.sol
 
+## Note.sol
+Semplice programma che permette di salvare, modificare e stampare delle note. 
+Questo programma ha l'idea di essere una base per una checklist di attività da fare o sviluppi simili.
+## Atleti.sol
+Permette la registrazione di atleti con il loro punteggio, modificare il punteggio e ritornare la classifica degli atleti.
 ## Votazione.sol 
 ### Funzionamento
 Viene creato il contratto "Votazione" per gestire un sistema di votazione nel quale:
@@ -50,3 +57,21 @@ Viene creato il contratto "Votazione" per gestire un sistema di votazione nel qu
 15) classifica finale dei primi 5 candidati: primo 1 voti, secondo 1 voto e terzo 2 voto
 16) chiamare il vincitore che sarà il terzo candidato
 Non sono stati effettuati ulteriori test
+
+## Asta
+### Funzionamento
+Il programma asta si prefigge l'obiettivo di creare una semplice asta. 
+Con il seguente algoritmo un indirizzo può creare un asta, gli altri indirizzo possono fare offerte maggiori.
+Per far questo creiamo:
+ - Costruttore: 
+	si definiscono il beneficario
+	il tempo di scadenza di un asta 
+ - funzione offerta(uint amount):
+	in questa funzione si controlla inanzitutto se il tempo per effettuare offerte è scaduto, in tal caso si chiama fineAsta(revert nome error);
+	si controlla che l'offerta (msg.value) sia inferiore alla precedente offerta e in tal caso si manda in errore 
+	si rimandano al vecchio offerente i suoi soldi (chiamando funzione withdraw) 
+	si cambiano i dati del miglior offerente
+	si manda un messaggio con la nuova offerta
+ - funzione fineAsta():
+	si chiama evento fine asta in cui si riporta il portafoglio del vincitore e l'amount(chiamato con emit)
+	si mandano i soldi al beneficario
