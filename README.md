@@ -5,7 +5,8 @@ Nella seconda metà del mese di febbraio ho iniziato a studiare solidity. In que
 I programmi sono:
 1) note.sol
 2) atleti.sol
-3) votazione.sol
+3) votazione.sol (partito da esempi della libreria solidity)
+4) asta.sol (partito da esempi della libreria solidity)
 
 ## Note.sol
 Semplice programma che permette di salvare, modificare e stampare delle note. 
