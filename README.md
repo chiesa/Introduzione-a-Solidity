@@ -36,11 +36,11 @@ Viene creato il contratto "Votazione" per gestire un sistema di votazione nel qu
 		"0x4000000000000000000000000000000000000000000000000000000000000000",
 		"0x5000000000000000000000000000000000000000000000000000000000000000"]
  - dare diritto di voto a 5 indirizzi (test sempre con numeri minori): <br/>
-	0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 (creatore -> errore perchè inizializzato in partenza)
-	0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2
-	0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db
-	0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB
-	0x617F2E2fD72FD9D5503197092aC168c91465E7f2
+	0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 (creatore -> errore perchè inizializzato in partenza) <br/>
+	0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2 <br/>
+	0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db <br/>
+	0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB <br/>
+	0x617F2E2fD72FD9D5503197092aC168c91465E7f2 <br/>
 2) si delega il primo al secondo 
      - il secondo al primo (andrà in errore)
 3) si delega il secondo al terzo
@@ -87,12 +87,12 @@ Togliendo i commenti dalle righe commentate nel codice la prima volta in cui si 
 Chiaramente a livello logico, questo problema verrà risolto a livello applicativo: quando scadrà il tempo l'applicazione chiamerà fineAsta()
 
 ### Test effettuato
-Si crea un contratto in cui il beneficario è 0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB, l'offerta è 10, la durata è 180 secondi, incremento minimo è 0.1;
+Si crea un contratto in cui il beneficario è 0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB, l'offerta è 10, la durata è 180 secondi, incremento minimo è 0.1: <br/>
 	0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB, 10, 180, 2
-Si utilizzeranno i seguenti portafoglio per la fase di test: 
-  0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 (creatore - primo indirizzo)
-  0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2 (secondo indirizzo)
-  0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db (terzo indirizzo)
+Si utilizzeranno i seguenti portafoglio per la fase di test: <br/>
+  0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 (creatore - primo indirizzo) <br/>
+  0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2 (secondo indirizzo) <br/>
+  0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db (terzo indirizzo) <br/>
 1) con il primo portafoglio si va a fare un'offerta pari a 8 (errore sotto soglia);
 2) con il primo portafoglio si va a fare un'offerta pari a 15;
 3) con il primo portafoglio si va a fare un'offerta pari a 17 (errore perchè si è già il miglior offerente);
