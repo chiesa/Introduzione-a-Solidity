@@ -169,12 +169,12 @@ ritornoSoldi():
 	se soldi>0: si rinvia i soldi ricevuti
 
 ### TEST EFFETTUATI: 
-andiamo a utilizzare 4 indirizzi:
+- andiamo a utilizzare 4 indirizzi:
 	0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 (creatore -> errore perchè inizializzato in partenza) <br/>
 	0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2 <br/>
 	0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db <br/>
 	0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB <br/>
- Si crea un contratto in cui il beneficario è 0x617F2E2fD72FD9D5503197092aC168c91465E7f2, l'offerta è 10, la durata è 180 secondi: <br/>
+- Si crea un contratto in cui il beneficario è 0x617F2E2fD72FD9D5503197092aC168c91465E7f2, l'offerta è 10, la durata è 180 secondi: <br/>
 	0x617F2E2fD72FD9D5503197092aC168c91465E7f2, 10, 180 <br/>
 1) il primo fa un offerta di 10 mandando 20 
 2) il secondo prova a offire 8 (errore)
