@@ -7,6 +7,7 @@ I programmi sono:
 2) atleti.sol
 3) votazione.sol (partito da esempi della libreria solidity)
 4) asta.sol (partito da esempi della libreria solidity)
+5) OffertaScatolaChiusa.sol (partito da esempi della libreria solidity
 
 ## Note.sol
 Semplice programma che permette di salvare, modificare e stampare delle note. 
@@ -108,3 +109,82 @@ Chiaramente a livello logico, questo problema verrà risolto a livello applicati
 12) dopo almeno 1 minuto, il primo offrirà 40 -> errore asta finità e i soldi verranno mandati al beneficario.
 Non sono stati effettuati ulteriori test
 
+## OffertaScatolaChiusa
+### FUNZIONAMENTO:
+Variabili:
+ - address[] partecipanti
+ - mapping offerente(address => offerte)
+ - struttura offerte{
+		bytes32 cifraOfferta da cifrare
+		uint soldiInviati
+   }
+ - address beneficiario
+ - uint offerenteMinima
+ - uint scadenzaAsta
+ - address creatore
+
+Costruttore:
+ - tempo scadenza asta
+ - beneficiario
+ - offerta minima
+ - creatore
+ 
+Offerta(uint cifra): 
+ - cifra > offerta minima (required)
+ - cifra < soldi inviati (msg.value)
+ - now < tempo scadenza asta
+ - se sender non è presente trai partecipanti 
+		viene aggiunto indizzo ai partecipanti
+   altrimenti
+		viene chiamata la funzione annullaOfferta
+ - salvare il valore dei soldi inviati = msg.value e dei soldi realmente offerti (cifra) DA CIFRARE
+NOTA BENE: il sistema di cifratura va rivisto perchè è facilmente recuperabile la massima offerta
+
+annullaOfferta():
+ - required sender in partecipanti
+ - soldi inviati > 0
+ - invio soldi inviati;
+ - soldi offerti = bytes32(0); 
+ - soldi inviati = 0
+ 
+vincitore() return(addr, amount):
+ - required:
+	solo creatore può chiamare la funzione
+	tempo dell'asta deve essere scaduto
+ - si notifica chiusura asta
+ - required: array partecipanti non sia nullo
+ - ciclo for sui partecipanti. 
+	si cerca l'offerta massima (utilizzare variabile di supporto uint offMass). Per fare questo bisogna decifrare il valore
+	si salva la posizione dell'indirizzo con offerta più alta (utilizzare var di supporto uint poss)
+ - si verifica che l'offerta massima non sia 0 => errore.
+ - si inviano i soldi al beneficiario
+ - si inviano i soldi in più al offerente
+ - nell'array partecipanti si sostituisce l'offerente in posizione 0 con quello con offerta massima (e viceversa) 
+		-> NOTA: nella funzione ritorno soldi partiamo da 1 
+ - si chiama la funzione ritornoSoldi()
+ - return valori 
+ 
+ritornoSoldi():
+ - ciclo for sugli indirizzi partendo con i=1 (NON 0)
+	se soldi>0: si rinvia i soldi ricevuti
+
+### TEST EFFETTUATI: 
+andiamo a utilizzare 4 indirizzi:
+	0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 (creatore -> errore perchè inizializzato in partenza) <br/>
+	0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2 <br/>
+	0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db <br/>
+	0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB <br/>
+ Si crea un contratto in cui il beneficario è 0x617F2E2fD72FD9D5503197092aC168c91465E7f2, l'offerta è 10, la durata è 180 secondi: <br/>
+	0x617F2E2fD72FD9D5503197092aC168c91465E7f2, 10, 180 <br/>
+1) il primo fa un offerta di 10 mandando 20 
+2) il secondo prova a offire 8 (errore)
+3) il secondo offre 15 e manda 30
+4) il secondo elimina l'offerta fatta
+5) si chiama vincitore (non sarà finita l'asta -> errore)
+6) il terzo prova a offri 20 e mandare 15 (errore)
+7) il terzo offre 20 e manda 30
+8) il terzo offre 25 e manda 30 (cambia offerta)
+9) finisce asta, il quarto prova a fare un offerta (errore)
+10) il quarto prova a chiamare il vincitore (errore perchè non proprietario)
+Non sono stati effettuati ulteriori test
+*/
