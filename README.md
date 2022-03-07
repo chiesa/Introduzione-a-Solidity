@@ -189,7 +189,7 @@ ritornoSoldi():
 10) il quarto prova a chiamare il vincitore (errore perchè non proprietario)
 Non sono stati effettuati ulteriori test
 
-##Vendita
+## Vendita
 ### FUNZIONAMENTO:
 Il seguente sistema garantisce che la vendità di un prodotto avvenga in quanto è nell'interesse sia del venditore che dell'acquirente.
 Per far questo l'entrambi mettono 2 volte il prezzo del prodotto e una volta conclusa l'operazione il venditore ricevera 3/2 e l'acquirente 1/2.
