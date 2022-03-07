@@ -225,11 +225,7 @@ funzioni:
 		sono 3 funzioni che permetto di ritornare i soldi inviati all'acquirente, al venditore o a entrambi;
  - riepilogo():
 		ritorna lo stato della vendita con tutte le informazioni del caso: 
-		nome, importo, venditore, acquirente, stage
-
-TEST:
- - si crea una vendita: venditore XXXXXXXX, importo XX:
- - si modificaVendita:
+		nome, importo, venditore, acquirente, stageì
 
 #### Purchese
 In dettaglio il funzionamento del contratto singlePuchase:
@@ -259,3 +255,36 @@ Da qui tutte le funzioni verificheranno l'esistenza del prodotto nell'array dei 
 	ritorna la lista dei prodotti in vendita;
 
 ### TEST EFFETTUATI: 
+#### singlePuchase
+ 1) si crea una vendita: venditore 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4, prodotto erba, importo 15 e si invia 15ETH:
+		"erba", 15 => errore
+ 2) si crea una vendita: venditore 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4, prodotto erba, importo 15 e si invia 40ETH:
+		"erba", 15 => errore
+ 3) si crea una vendita: venditore 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4, prodotto erba, importo 15 e si invia esattamente il doppio:
+		"erba",15
+ 4) 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2 prova ad acquista e invia 20 => errore
+ 5) 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2 prova ad acquistare e invia 30
+ 6) riepilogo(): erba, 15, 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4, 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2, 1
+ 7) 0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db prova ad acquistare e invia 30 => errore
+ 8) venditore annulla acquisto
+ 9) si modificaVendita: il prezzo cambia a 20 e invia 30 => errore
+ 10) si modificaVendita: il prezzo cambia a 20 e invia 40
+ 11) 0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db prova ad acquistare e invia 40
+ 12) 0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db (non venditore), prova ad accettare l'acquirente => errore
+ 13) venditore accetta offerta
+ 14) venditore prova a chiamare la funzione prodottoRicevuto() => errore
+ 15) riepilogo(): erba, 20, 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4, 0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db, 3
+ 16) acquirente chiama prodotto ricevuto
+ 17) riepilogo(): erba, 20, 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4, 0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db, 4
+ 
+#### Purchese
+1) 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 crea il contratto
+2) 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2 mette in vendita 2 prodotti:
+	arpa, 5 e invia 10
+	chitarra, 5 e invia 10
+3) 0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db acquista arpa
+4) returnProdotti()
+5) riepilogo(arpa)
+6) 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2 accetta la vendita per arpa
+7) 0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db dichiara che arpa è arrivata
+8) riepilogo arpa => errore 

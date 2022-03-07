@@ -31,9 +31,9 @@ contract singlePuchase{
 
 	// si impostano le variabili base quali: nome del prodotto, importo, lo stato iniziale (MessaVendita), chi è il venditore
     constructor(string memory prod, uint i) payable{
-        require(i!=0 && i*2==msg.value, "importo non valido");
+        require(i*2000000000000000000==msg.value, "importo non valido");
         nome = prod;
-        importo = i;
+        importo = i*1000000000000000000;
         stage = Stages.MessaVendita;
         venditore = payable(msg.sender);
     }
@@ -41,9 +41,11 @@ contract singlePuchase{
 	// la funzione permette la modifica del prezzo di vendita di un prodotto
 	// l'operazione può essere fatta unicamente dal venditore quando lo stato è ancora "MessaVendita"
 	// la funzione non modificherà lo stato
-    function modificaVendita(uint i) public atStage(Stages.MessaVendita){
+    function modificaVendita(uint i) public payable atStage(Stages.MessaVendita){
         require(msg.sender==venditore, "non puoi eseguire l'operazione");
-        importo = i;
+		require(msg.value==i*2000000000000000000, "non si ha inviato il corretto ammontare di soldi");
+        venditore.transfer(importo*2);
+        importo = i*1000000000000000000;
     }
 
     // solo quando lo stato è MessaVendita si può chiamare la seguente funzione
@@ -84,7 +86,10 @@ contract singlePuchase{
 	// la funzione chiama claim che: invierà i soldi e cambierà lo stato in ProdottoRicevuto
     function prodottoRicevuto() public atStage(Stages.ProdottoInviato){
         require(msg.sender==acquirente, "non puoi eseguire l'operazione");
-        claim();
+        claim();importo = 0;
+        nome = "";
+		venditore = payable(address(0));
+        acquirente = payable(address(0));
     }
 
     // la funzione può essere chiamata solo se la funzione è in stato ProdottoRicevuto e viene chiamata solo da prodottoRicevuto
@@ -122,6 +127,6 @@ contract singlePuchase{
     // torna un riepilogo di quanto avventuto
     // funzione chiamabile in qualsiasi stato
     function riepilogo() public view returns(string memory,uint,address,address,Stages){
-        return (nome, importo, venditore, acquirente, stage);
+        return (nome, importo/1000000000000000000, venditore, acquirente, stage);
     }
 }

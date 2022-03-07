@@ -36,6 +36,7 @@ contract Puchase{
     // l'acquirente deve mandare 2 volte il prezzo del prodotto
     // si cambia lo stato in AccettaCliente
     function acquista(string memory prod) payable verificaEsistenzaInArray(prod) public{
+        require(msg.sender!=creatore);		
         prodotti[mapPosizione[prod]].acquista();
     }
 
