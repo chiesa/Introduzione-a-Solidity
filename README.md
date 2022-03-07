@@ -7,7 +7,8 @@ I programmi sono:
 2) atleti.sol
 3) votazione.sol (partito da esempi della libreria solidity)
 4) asta.sol (partito da esempi della libreria solidity)
-5) OffertaScatolaChiusa.sol (partito da esempi della libreria solidity
+5) OffertaScatolaChiusa.sol (partito da esempi della libreria solidity)
+6) vendita: singlePuchase e Purchese (partito da esempi della libreria solidity)
 
 ## Note.sol
 Semplice programma che permette di salvare, modificare e stampare delle note. 
@@ -187,4 +188,74 @@ ritornoSoldi():
 9) finisce asta, il quarto prova a fare un offerta (errore)
 10) il quarto prova a chiamare il vincitore (errore perchè non proprietario)
 Non sono stati effettuati ulteriori test
-*/
+
+##Vendita
+### FUNZIONAMENTO:
+Il seguente sistema garantisce che la vendità di un prodotto avvenga in quanto è nell'interesse sia del venditore che dell'acquirente.
+Per far questo l'entrambi mettono 2 volte il prezzo del prodotto e una volta conclusa l'operazione il venditore ricevera 3/2 e l'acquirente 1/2.
+
+Per rendere chiaro lo sviluppo è stato deciso di creare 2 classi:
+ - singlePuchase: permetta la gestione di una vendita basato su una macchina a stati diniti
+ - Purchese: permette la gestione di molteplici vendite. I prodotti saranno istanza del contratto singlePuchase
+ 
+#### singlePuchase
+In dettaglio il funzionamento del contratto singlePuchase:
+ - si basa su una macchina a stati in cui sono presenti 4 stati: MessaVendita (iniziale), AccettaCliente, ProdottoInviato, VenditaConclusa (finale)
+ - sono previsti un venditore, un acquirente
+ - sono presenti 4 funzioni per riportare il valore delle variabile, al momento non utilizzate, sostituibili quando utilizzate e di è da definirne l'utilità
+ - il costruttore imposta il nome del prodotto, il prezzo, lo stato iniziale della macchina, il venditore e richiede che il creatore abbia inviato 2 volte l'importo a cui vuole vendere il prodotto 
+funzioni:
+ - modificaVendita(uint i) permette di modificare il prezzo di vendita
+ - acquista(): 
+		stato: MessaVendita -> AccettaCliente
+		si definisce l'acquirente che invierà 2 volte il prezzo del prodotto
+ - annullaAcquisto():
+		stato: AccettaCliente -> MessaVendita
+		sono il venditore o l'acquirente possono chiamare la funzione
+		permette di annullare la richiesta di acquista del acquirente ma lascia il prodotto in vendita
+ - accettaAcquirente()
+		stato: AccettaCliente -> ProdottoInviato
+		con questa funzione il venditore accetta il cliente e garantisce l'invio del prodotto
+ - prodottoRicevuto()
+		stato: ProdottoInviato -> (cambio in claim) VenditaConclusa
+		l'acquirente può dichiarare l'arrivo del prodotto e così facendo chiama la funzione claim
+ - claim():
+		è di supporto a prodottoRicevuto() e serve a mandare i soldi (3/4 al venditore e 1/4 al acquirente)
+ - refound: 
+		sono 3 funzioni che permetto di ritornare i soldi inviati all'acquirente, al venditore o a entrambi;
+ - riepilogo():
+		ritorna lo stato della vendita con tutte le informazioni del caso: 
+		nome, importo, venditore, acquirente, stage
+
+TEST:
+ - si crea una vendita: venditore XXXXXXXX, importo XX:
+ - si modificaVendita:
+
+#### Purchese
+In dettaglio il funzionamento del contratto singlePuchase:
+ - viene creato un array di singlePuchase;
+ - nel construttore si definisce il venditore
+	si inizializza il primo valore dell'array di prodotti in vendita a null e questo non verrà mai utilizzato
+ - propostaVendita(string memory prod, uint i): 
+	permette di inizializzare una nuova vendita 
+	incaso la vendita sia già inizializzata permetti di cambiare il prezzo
+Da qui tutte le funzioni verificheranno l'esistenza del prodotto nell'array dei prodotti in vendita
+ - acquista(string memory prod): 
+	permette l'acquisto di un prodotto e in dettaglio chiama la funzione acquista() in singlePuchase
+ - annullaAcquisto(string memory prod): 
+	permette l'annullamento di un acquisto di un prodotto e in dettaglio chiama la funzione annullaAcquisto() in singlePuchase	
+ - annullaVedita(string memory prod):
+	può essere chiamata solo dal venditore o dal creatore e permette l'annulla della vendita chimando la funzione refoundAll() in singlePuchase
+ - accettaAcquirente(string memory prod):
+	permette di accettare un acquirente attraverso la funzione accettaAcquirente() in singlePuchase
+ - prodottoRicevuto(string memory prod):
+	la funzione chiama prodottoRicevuto() in singlePuchase concludendo la vendita e pertanto andando a notificare e eliminare il prodotto dall'array dei prodotti in vendita
+ - eliminaElArray(uint pos):
+	permette di eliminare un elemento dell'array dei prodotti in vendita
+	funzione a supporto di prodottoRicevuto
+ - riepilogo(string memory prod):
+	riporta un riepilogo del prodotto in vendita quindi: posizione nell'array dei prodotti, nome, importo, venditore, acquirente, stage
+ - returnProdotti():
+	ritorna la lista dei prodotti in vendita;
+
+### TEST EFFETTUATI: 
