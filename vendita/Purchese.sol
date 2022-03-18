@@ -18,12 +18,13 @@ contract Puchase{
     }
 
     function propostaVendita(string memory prod, uint i) public payable{
-        if(mapPosizione[prod] == 0){
+        require(i!=0, "importo non valido");
+        //if(mapPosizione[prod] == 0){
             require(msg.sender!=creatore);
-            prodotti.push(new singlePuchase(prod,i));
-        } else {
-            prodotti[mapPosizione[prod]].modificaVendita(i);
-        }
+            prodotti.push(new singlePuchase{value: msg.value}(prod,i));
+        //} else {
+        //    prodotti[mapPosizione[prod]].modificaVendita(i);
+        //}
     }
 
     modifier verificaEsistenzaInArray(string memory prod){
@@ -31,13 +32,15 @@ contract Puchase{
         _;
     }
 
+    function getImporto(string memory prod) public view returns(uint){ return prodotti[mapPosizione[prod]].rImporto();}
+
     // si definisce il cliente, si prendono i soldi dal cliente
     // solo quando lo stato è MessaVendita si può accedere a questo stato
     // l'acquirente deve mandare 2 volte il prezzo del prodotto
     // si cambia lo stato in AccettaCliente
     function acquista(string memory prod) payable verificaEsistenzaInArray(prod) public{
         require(msg.sender!=creatore);		
-        prodotti[mapPosizione[prod]].acquista();
+        prodotti[mapPosizione[prod]].acquista{value: msg.value}();
     }
 
     // il cliente e il venditore possono annullare l'acquisto, questo comporta:
@@ -46,7 +49,7 @@ contract Puchase{
     // si rimandano i soldi all'acquirente e si annulla la variabile "acquirente"
     // si riporta lo stato a MessaVendita
     function annullaAcquisto(string memory prod) public verificaEsistenzaInArray(prod) payable{
-        prodotti[mapPosizione[prod]].annullaAcquisto();
+        prodotti[mapPosizione[prod]].annullaAcquisto{value: msg.value}();
     }
 
     //chiamera funzioni per il refuond

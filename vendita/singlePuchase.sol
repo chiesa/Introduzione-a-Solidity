@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.4;
 
+import "@openzeppelin/contracts/utils/Strings.sol";
+
 contract singlePuchase{
     string nome;
     uint importo;
@@ -25,24 +27,24 @@ contract singlePuchase{
 	// funzioni che premettono di ritornare il valore delle singole variabili
 	// allo stato attuale dello script l'utilità è dubbia
     function rStage() private view returns(Stages){return stage;}
-    function rImporto() private view returns(uint){return importo;}
+    function rImporto() public view returns(uint){return importo;}
     function rSender() public view returns(address payable){return venditore;}
     function rBuyer() private view returns(address payable){return acquirente;}
 
 	// si impostano le variabili base quali: nome del prodotto, importo, lo stato iniziale (MessaVendita), chi è il venditore
     constructor(string memory prod, uint i) payable{
-        require(i*2000000000000000000==msg.value, "importo non valido");
+        require(msg.value==i*2000000000000000000, string(abi.encodePacked("importo non valido: ", Strings.toString(msg.value)," e ", Strings.toString(i*2000000000000000000))));
         nome = prod;
         importo = i*1000000000000000000;
         stage = Stages.MessaVendita;
-        venditore = payable(msg.sender);
+        venditore = payable(tx.origin);
     }
 	
 	// la funzione permette la modifica del prezzo di vendita di un prodotto
 	// l'operazione può essere fatta unicamente dal venditore quando lo stato è ancora "MessaVendita"
 	// la funzione non modificherà lo stato
     function modificaVendita(uint i) public payable atStage(Stages.MessaVendita){
-        require(msg.sender==venditore, "non puoi eseguire l'operazione");
+        require(tx.origin==venditore, "non puoi eseguire l'operazione");
 		require(msg.value==i*2000000000000000000, "non si ha inviato il corretto ammontare di soldi");
         venditore.transfer(importo*2);
         importo = i*1000000000000000000;
@@ -53,8 +55,8 @@ contract singlePuchase{
     // l'acquirente deve mandare 2 volte il prezzo del prodotto
     // si cambia lo stato in AccettaCliente
     function acquista() payable public atStage(Stages.MessaVendita){
-        require(importo*2 == msg.value, "importo inviato non corretto");
-        acquirente = payable(msg.sender);
+        require(msg.value==importo*2, string(abi.encodePacked("importo non valido: ", Strings.toString(msg.value)," e ", Strings.toString(importo*2))));
+        acquirente = payable(tx.origin);
         stage = Stages.AccettaCliente;
     }
 
@@ -64,7 +66,7 @@ contract singlePuchase{
     // si rimandano i soldi all'acquirente e si annulla la variabile "acquirente"
     // si riporta lo stato a MessaVendita
     function annullaAcquisto() public payable atStage(Stages.AccettaCliente){
-        require(msg.sender==rSender() || msg.sender==rBuyer(), "non puoi eseguire l'operazione");
+        require(tx.origin==rSender() || tx.origin==rBuyer(), "non puoi eseguire l'operazione");
         require(acquirente!=address(0),"non e' stato definito un acquirente");
         acquirente.transfer(importo*2);
         acquirente = payable(address(0));
@@ -76,7 +78,7 @@ contract singlePuchase{
     // solo il venditore può chiamare la funzione
     // lo stato cambierà in ProdottoInviato
     function accettaAcquirente() public atStage(Stages.AccettaCliente){
-        require(msg.sender==venditore, "non puoi eseguire l'operazione");
+        require(tx.origin==venditore, "non puoi eseguire l'operazione");
         stage = Stages.ProdottoInviato;
     }
 
@@ -85,7 +87,7 @@ contract singlePuchase{
     // solo il cliente può chiamare la funzione
 	// la funzione chiama claim che: invierà i soldi e cambierà lo stato in ProdottoRicevuto
     function prodottoRicevuto() public atStage(Stages.ProdottoInviato){
-        require(msg.sender==acquirente, "non puoi eseguire l'operazione");
+        require(tx.origin==acquirente, "non puoi eseguire l'operazione");
         claim();importo = 0;
         nome = "";
 		venditore = payable(address(0));

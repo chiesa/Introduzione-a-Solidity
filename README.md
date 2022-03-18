@@ -278,9 +278,10 @@ Da qui tutte le funzioni verificheranno l'esistenza del prodotto nell'array dei 
  17) riepilogo(): erba, 20, 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4, 0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db, 4
  
 #### Purchese
+NOTA BENE: TODO: (finire i test e sistemare il codice)
 1) 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 crea il contratto
 2) 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2 mette in vendita 2 prodotti:
-	arpa, 5 e invia 10
+	"arpa", 5 e invia 10
 	chitarra, 5 e invia 10
 3) 0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db acquista arpa
 4) returnProdotti()
